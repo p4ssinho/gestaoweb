@@ -26,10 +26,10 @@
 <body class="bg-white text-slate-800">
 
   <header class="w-full bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+    <div class="w-full px-0 md:px-8 h-20 flex items-center justify-between">
       
       <div class="flex items-center gap-2">
-        <img src="img/nlogo.png" alt="Logo Programa Mais Gestão" class="h-12 w-auto object-contain">
+        <img src="img/nlogo.png" alt="Logo Programa Mais Gestão" class="h-16 w-auto object-contain">
       </div>
 
       <nav class="hidden lg:flex items-center gap-6 text-xs font-bold text-[#4B5E2D]">
@@ -47,7 +47,7 @@
     </div>
   </header>
 
-  <section class="relative w-full h-[550px] bg-slate-100 overflow-hidden">
+  <section class="relative w-full h-[650px] bg-slate-100 overflow-hidden">
     
     <div class="absolute inset-0 z-0">
       <img 
@@ -71,6 +71,60 @@
     </div>
 
   </section>
+
+  <section id="noticias" class="py-16 bg-gray-50">
+  <div class="w-full px-4 md:px-8 lg:px-16 mx-auto">
+    <h2 class="text-3xl font-extrabold text-[#4B5E2D] mb-8">Últimas Notícias</h2>
+    
+    <div id="lista-noticias" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <p class="text-gray-500 font-medium">Buscando notícias no servidor...</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Função para buscar as notícias na sua API Node.js
+  async function carregarNoticias() {
+    try {
+      // 1. Faz o pedido para a porta onde o servidor está rodando
+      const resposta = await fetch('http://localhost:3000/api/noticias');
+      const noticias = await resposta.json();
+      
+      const container = document.getElementById('lista-noticias');
+      container.innerHTML = ''; // Limpa a mensagem de "Buscando..."
+      
+      // 2. Se não tiver notícia, avisa
+      if (noticias.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">Nenhuma notícia publicada ainda.</p>';
+        return;
+      }
+
+      // 3. Para cada notícia vinda do banco, cria um Card HTML
+      noticias.forEach(noticia => {
+        // Formata a data para o padrão brasileiro
+        const data = new Date(noticia.data_criacao).toLocaleDateString('pt-BR');
+        
+        const card = `
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+            <span class="text-xs text-[#96B23C] font-bold uppercase tracking-wider">${data}</span>
+            <h3 class="text-xl font-bold text-[#4B5E2D] mt-2 mb-3">${noticia.titulo}</h3>
+            <p class="text-gray-600 line-clamp-3 mb-4">${noticia.conteudo}</p>
+            <a href="#" class="text-[#96B23C] font-bold hover:underline text-sm">Ler artigo completo &rarr;</a>
+          </div>
+        `;
+        
+        container.innerHTML += card; // Adiciona o card na tela
+      });
+
+    } catch (erro) {
+      console.error('Erro ao buscar servidor:', erro);
+      document.getElementById('lista-noticias').innerHTML = '<p class="text-red-500">Erro ao carregar sistema de notícias.</p>';
+    }
+  }
+
+  // Executa a função assim que o site abre
+  carregarNoticias();
+</script>
 
 </body>
 </html>
