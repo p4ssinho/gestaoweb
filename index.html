@@ -12,12 +12,13 @@
     body { font-family: 'Montserrat', sans-serif; }
     
     /* Efeito de sobreposição idêntico à imagem: Amarelo sólido na esquerda que some em degradê para a direita */
+    /* Novo Efeito de sobreposição: Verde Escuro na esquerda sumindo em degradê */
     .hero-gradient {
       background: linear-gradient(to right, 
-        rgba(234, 179, 8, 1) 0%,    /* Amarelo sólido no início */
-        rgba(234, 179, 8, 0.9) 10%, /* Começa a dar transparência */
-        rgba(234, 179, 8, 0.2) 75%, /* Bem transparente sobre a foto */
-        rgba(234, 179, 8, 0) 100%   /* Totalmente transparente no final */
+        rgba(75, 94, 45, 1) 0%,    /* Verde escuro sólido no início */
+        rgba(75, 94, 45, 0.9) 35%, /* Começa a dar transparência */
+        rgba(75, 94, 45, 0.2) 75%, /* Bem transparente sobre a foto */
+        rgba(75, 94, 45, 0) 100%   /* Totalmente transparente no final */
       );
     }
   </style>
@@ -28,7 +29,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
       
       <div class="flex items-center gap-2">
-        <img src="img/logo.png" alt="Logo Programa Mais Gestão" class="h-12 w-auto object-contain">
+        <img src="img/nlogo.png" alt="Logo Programa Mais Gestão" class="h-12 w-auto object-contain">
       </div>
 
       <nav class="hidden lg:flex items-center gap-6 text-xs font-bold text-[#0073bc]">
