@@ -1,130 +1,580 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mais Gestão</title>
+  <title>Mais Gestão | Portal e Loja Oficial</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
-    body { font-family: 'Montserrat', sans-serif; }
-    
-    /* Efeito de sobreposição idêntico à imagem: Amarelo sólido na esquerda que some em degradê para a direita */
-    /* Novo Efeito de sobreposição: Verde Escuro na esquerda sumindo em degradê */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+    }
+
     .hero-gradient {
-      background: linear-gradient(to right, 
-        rgba(75, 94, 45, 1) 0%,    /* Verde escuro sólido no início */
-        rgba(75, 94, 45, 0.9) 10%, /* Começa a dar transparência */
-        rgba(75, 94, 45, 0.2) 75%, /* Bem transparente sobre a foto */
-        rgba(75, 94, 45, 0) 100%   /* Totalmente transparente no final */
-      );
+      background: linear-gradient(to right,
+          rgba(75, 94, 45, 1) 0%,
+          rgba(75, 94, 45, 0.9) 10%,
+          rgba(75, 94, 45, 0.25) 75%,
+          rgba(75, 94, 45, 0) 100%);
     }
   </style>
 </head>
-<body class="bg-white text-slate-800">
 
-  <header class="w-full bg-white shadow-sm sticky top-0 z-50">
-    <div class="w-full px-0 md:px-8 h-20 flex items-center justify-between">
-      
-      <div class="flex items-center gap-2">
-        <img src="img/nlogo.png" alt="Logo Programa Mais Gestão" class="h-16 w-auto object-contain">
-      </div>
+<body class="bg-white text-slate-800 flex flex-col min-h-screen">
+
+  <!-- HEADER -->
+  <header class="w-full bg-white shadow-sm sticky top-0 z-40 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+
+      <a href="#" class="flex items-center gap-2">
+        <img src="img/nlogo.png" alt="Logo Programa Mais Gestão" class="h-14 w-auto object-contain">
+      </a>
 
       <nav class="hidden lg:flex items-center gap-6 text-xs font-bold text-[#4B5E2D]">
-        <!-- Link ativo com destaque no Verde Claro -->
         <a href="#" class="text-[#96B23C] border-b-2 border-[#96B23C] pb-1">Início</a>
-        
-        <!-- Links normais com efeito hover no Verde Claro -->
-        <a href="#" class="hover:text-[#96B23C] transition">Quem Somos</a>
-        <a href="#" class="hover:text-[#96B23C] transition">Atuação</a>
-        <a href="#" class="hover:text-[#96B23C] transition">Cursos</a>
-        <a href="#" class="hover:text-[#96B23C] transition">Inscrições</a>
-        <a href="#" class="hover:text-[#96B23C] transition">Notícias</a>
-        <a href="#" class="hover:text-[#96B23C] transition">Contato</a>
+        <a href="#loja" class="hover:text-[#96B23C] transition">Loja Oficial</a>
+        <a href="#noticias" class="hover:text-[#96B23C] transition">Notícias</a>
+        <a href="painel.html"
+          class="px-3 py-1.5 bg-[#4B5E2D] text-white rounded-md hover:bg-[#3A4923] transition flex items-center gap-1">
+          <span>Painel Admin</span>
+        </a>
       </nav>
+
+      <!-- Botão Carrinho de Compras -->
+      <button onclick="toggleCarrinhoDrawer()"
+        class="relative flex items-center gap-2 bg-[#96B23C] text-white px-4 py-2 rounded-full font-bold text-xs hover:bg-[#839d33] transition shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+        </svg>
+        <span>Meu Carrinho</span>
+        <span id="cart-badge-count"
+          class="bg-white text-[#4B5E2D] text-xs w-5 h-5 rounded-full flex items-center justify-center font-extrabold ml-1">0</span>
+      </button>
     </div>
   </header>
 
-  <section class="relative w-full h-[650px] bg-slate-100 overflow-hidden">
-    
+  <!-- HERO SECTION -->
+  <section class="relative w-full h-[550px] bg-slate-100 overflow-hidden">
     <div class="absolute inset-0 z-0">
-      <img 
-        src="img/elenco.png" 
-        alt="Membros" 
-        class="w-full h-full object-cover object-right md:object-center"
-      >
+      <img src="img/elenco.png" alt="Membros" class="w-full h-full object-cover object-right md:object-center">
     </div>
-
     <div class="absolute inset-0 hero-gradient z-10"></div>
-
     <div class="absolute inset-0 z-20 max-w-7xl mx-auto px-6 md:px-12 flex items-center">
       <div class="max-w-xl text-left">
-        <h1 class="text-3xl md:text-5xl font-extrabold tracking-wider text-white uppercase leading-tight drop-shadow-sm">
-           Programa<br>
-           Mais<br>
-           Gestão
-
+        <h1
+          class="text-3xl md:text-5xl font-extrabold tracking-wider text-white uppercase leading-tight drop-shadow-sm mb-4">
+          Programa<br>Mais<br>Gestão
         </h1>
+        <p class="text-white text-sm md:text-base mb-6 font-medium text-slate-100">
+          Capacitação executiva, desenvolvimento institucional e soluções educacionais de alto impacto.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#loja"
+            class="bg-[#96B23C] hover:bg-[#839d33] text-white font-bold px-6 py-3 rounded-lg transition shadow-lg text-xs md:text-sm uppercase tracking-wider">
+            Ver Cursos e Produtos
+          </a>
+          <a href="#noticias"
+            class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-bold px-6 py-3 rounded-lg transition text-xs md:text-sm uppercase tracking-wider border border-white/40">
+            Notícias
+          </a>
+        </div>
       </div>
     </div>
-
   </section>
 
+  <!-- SEÇÃO E-COMMERCE / LOJA -->
+  <section id="loja" class="py-16 bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 md:px-8">
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <span class="text-xs font-extrabold text-[#96B23C] uppercase tracking-widest">Loja & Capacitação</span>
+          <h2 class="text-3xl font-extrabold text-[#4B5E2D] mt-1">Cursos e Materiais Didáticos</h2>
+        </div>
+
+        <!-- Filtros por Categoria -->
+        <div class="flex flex-wrap gap-2" id="categoria-filtros">
+          <button onclick="filtrarProdutos('Todos')"
+            class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-[#4B5E2D] text-white"
+            data-cat="Todos">Todos</button>
+          <button onclick="filtrarProdutos('Cursos')"
+            class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-cat="Cursos">Cursos</button>
+          <button onclick="filtrarProdutos('Livros')"
+            class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-cat="Livros">Livros & Apostilas</button>
+          <button onclick="filtrarProdutos('Acessórios')"
+            class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200"
+            data-cat="Acessórios">Acessórios</button>
+        </div>
+      </div>
+
+      <!-- Grid de Produtos -->
+      <div id="lista-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <p class="text-gray-500 font-medium col-span-full py-12 text-center">Buscando catálogo de produtos...</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SEÇÃO NOTÍCIAS -->
   <section id="noticias" class="py-16 bg-gray-50">
-  <div class="w-full px-4 md:px-8 lg:px-16 mx-auto">
-    <h2 class="text-3xl font-extrabold text-[#4B5E2D] mb-8">Últimas Notícias</h2>
-    
-    <div id="lista-noticias" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <p class="text-gray-500 font-medium">Buscando notícias no servidor...</p>
+    <div class="max-w-7xl mx-auto px-4 md:px-8">
+      <div class="mb-10">
+        <span class="text-xs font-extrabold text-[#96B23C] uppercase tracking-widest">Fique Atualizado</span>
+        <h2 class="text-3xl font-extrabold text-[#4B5E2D] mt-1">Últimas Notícias</h2>
+      </div>
+
+      <div id="lista-noticias" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <p class="text-gray-500 font-medium">Buscando notícias no servidor...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#4B5E2D] text-white mt-auto py-10">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="bg-white px-2.5 py-1 rounded-xl flex items-center justify-center shadow-sm">
+          <img src="img/nlogo.png" alt="Logo Programa Mais Gestão" class="h-10 w-auto object-contain">
+        </div>
+        <span class="text-sm font-semibold">© 2026 Programa Mais Gestão. Todos os direitos reservados.</span>
+      </div>
+      <div class="flex gap-6 text-xs text-slate-200 font-medium">
+        <a href="#loja" class="hover:underline">Loja Virtual</a>
+        <a href="#noticias" class="hover:underline">Notícias</a>
+        <a href="painel.html" class="hover:underline">Área Administrativa</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE DETALHES DO PRODUTO -->
+  <div id="produtoModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl animate-fade-in">
+      <button onclick="fecharModalProduto()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+      <div id="modalProdutoConteudo"></div>
     </div>
   </div>
-</section>
 
-<script>
-  // Função para buscar as notícias na sua API Node.js
-  async function carregarNoticias() {
-    try {
-      // 1. Faz o pedido para a porta onde o servidor está rodando
-      const resposta = await fetch('http://localhost:3000/api/noticias');
-      const noticias = await resposta.json();
-      
-      const container = document.getElementById('lista-noticias');
-      container.innerHTML = ''; // Limpa a mensagem de "Buscando..."
-      
-      // 2. Se não tiver notícia, avisa
-      if (noticias.length === 0) {
-        container.innerHTML = '<p class="text-gray-500">Nenhuma notícia publicada ainda.</p>';
+  <!-- CART SLIDE-OVER DRAWER -->
+  <div id="carrinhoDrawer" class="fixed inset-0 z-50 hidden">
+    <div onclick="toggleCarrinhoDrawer()" class="absolute inset-0 bg-black/50 transition-opacity"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+
+      <div class="p-6 border-b flex items-center justify-between bg-[#4B5E2D] text-white">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <h3 class="text-lg font-bold">Seu Carrinho</h3>
+        </div>
+        <button onclick="toggleCarrinhoDrawer()"
+          class="text-white hover:text-gray-200 font-bold text-2xl">&times;</button>
+      </div>
+
+      <!-- Itens do Carrinho -->
+      <div id="carrinhoItens" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <p class="text-center text-gray-500 my-10">Seu carrinho está vazio.</p>
+      </div>
+
+      <!-- Footer do Carrinho -->
+      <div class="p-6 border-t bg-gray-50 space-y-4">
+        <div class="flex justify-between text-base font-extrabold text-[#4B5E2D]">
+          <span>Total:</span>
+          <span id="carrinhoTotal">R$ 0,00</span>
+        </div>
+        <button onclick="abrirCheckout()"
+          class="w-full bg-[#96B23C] hover:bg-[#839d33] text-white font-bold py-3 rounded-xl transition shadow text-sm">
+          Finalizar Pedido
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="fecharCheckout()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+
+      <h3 class="text-2xl font-extrabold text-[#4B5E2D] mb-4">Finalizar Compra</h3>
+      <p class="text-xs text-gray-500 mb-6">Preencha seus dados para concluir o seu pedido.</p>
+
+      <form id="formCheckout" onsubmit="processarPedido(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Nome Completo</label>
+          <input type="text" id="chk-nome" required
+            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]"
+            placeholder="Seu nome completo">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">E-mail</label>
+          <input type="email" id="chk-email" required
+            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]"
+            placeholder="seuemail@exemplo.com">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Forma de Pagamento</label>
+          <select id="chk-pagamento" onchange="alterarPagamentoView(this.value)"
+            class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]">
+            <option value="PIX">PIX (Aprovação Imediata)</option>
+            <option value="Cartão de Crédito">Cartão de Crédito</option>
+            <option value="WhatsApp">Enviar pedido por WhatsApp</option>
+          </select>
+        </div>
+
+        <!-- Box de instrução de pagamento -->
+        <div id="pagamento-info"
+          class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
+          <p class="font-bold">Chave PIX (Simulação):</p>
+          <p class="font-mono bg-white p-2 rounded mt-1 border text-center select-all">
+            00020126580014br.gov.bcb.pix0136maisgestao-pix-demo</p>
+          <p class="mt-2 text-[11px] text-emerald-600">Ao clicar em "Confirmar Pedido", a chave será salva e a
+            confirmação será gerada.</p>
+        </div>
+
+        <div class="border-t pt-4 mt-6 flex justify-between items-center">
+          <div>
+            <span class="text-xs text-gray-500 block">Valor a pagar</span>
+            <span id="chkTotalDisplay" class="text-xl font-extrabold text-[#4B5E2D]">R$ 0,00</span>
+          </div>
+          <button type="submit"
+            class="bg-[#4B5E2D] hover:bg-[#3A4923] text-white font-bold px-6 py-3 rounded-xl transition text-sm">
+            Confirmar Pedido
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    let todosProdutos = [];
+    let carrinho = JSON.parse(localStorage.getItem('mais_gestao_carrinho')) || [];
+
+    // --- NOTÍCIAS ---
+    async function carregarNoticias() {
+      try {
+        const resposta = await fetch(`${API_URL}/noticias`);
+        const noticias = await resposta.json();
+        const container = document.getElementById('lista-noticias');
+        container.innerHTML = '';
+
+        if (noticias.length === 0) {
+          container.innerHTML = '<p class="text-gray-500">Nenhuma notícia publicada ainda.</p>';
+          return;
+        }
+
+        noticias.forEach(noticia => {
+          const data = new Date(noticia.data_criacao).toLocaleDateString('pt-BR');
+          const card = `
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+              <span class="text-xs text-[#96B23C] font-bold uppercase tracking-wider">${data}</span>
+              <h3 class="text-xl font-bold text-[#4B5E2D] mt-2 mb-3">${noticia.titulo}</h3>
+              <p class="text-gray-600 line-clamp-3 mb-4">${noticia.conteudo}</p>
+              <a href="#" class="text-[#96B23C] font-bold hover:underline text-sm">Ler artigo completo &rarr;</a>
+            </div>
+          `;
+          container.innerHTML += card;
+        });
+      } catch (erro) {
+        console.error('Erro ao buscar servidor:', erro);
+        document.getElementById('lista-noticias').innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>';
+      }
+    }
+
+    // --- PRODUTOS E E-COMMERCE ---
+    async function carregarProdutos() {
+      try {
+        const resposta = await fetch(`${API_URL}/produtos`);
+        todosProdutos = await resposta.json();
+        renderizarProdutos(todosProdutos);
+      } catch (e) {
+        document.getElementById('lista-produtos').innerHTML = '<p class="text-red-500 col-span-full text-center">Erro ao carregar produtos.</p>';
+      }
+    }
+
+    function renderizarProdutos(produtos) {
+      const container = document.getElementById('lista-produtos');
+      container.innerHTML = '';
+
+      if (produtos.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Nenhum produto encontrado nesta categoria.</p>';
         return;
       }
 
-      // 3. Para cada notícia vinda do banco, cria um Card HTML
-      noticias.forEach(noticia => {
-        // Formata a data para o padrão brasileiro
-        const data = new Date(noticia.data_criacao).toLocaleDateString('pt-BR');
-        
-        const card = `
-          <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
-            <span class="text-xs text-[#96B23C] font-bold uppercase tracking-wider">${data}</span>
-            <h3 class="text-xl font-bold text-[#4B5E2D] mt-2 mb-3">${noticia.titulo}</h3>
-            <p class="text-gray-600 line-clamp-3 mb-4">${noticia.conteudo}</p>
-            <a href="#" class="text-[#96B23C] font-bold hover:underline text-sm">Ler artigo completo &rarr;</a>
+      produtos.forEach(prod => {
+        const precoFmt = parseFloat(prod.preco).toFixed(2).replace('.', ',');
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition flex flex-col group";
+        card.innerHTML = `
+          <div class="relative h-48 overflow-hidden bg-gray-100">
+            <img src="${prod.imagem}" alt="${prod.nome}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <span class="absolute top-3 left-3 bg-[#4B5E2D] text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow">
+              ${prod.categoria}
+            </span>
+          </div>
+          
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-base text-slate-800 line-clamp-1 mb-1">${prod.nome}</h3>
+              <p class="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">${prod.descricao}</p>
+            </div>
+            
+            <div>
+              <div class="flex items-baseline justify-between mb-4">
+                <span class="text-xs text-gray-400 font-semibold">Valor:</span>
+                <span class="text-xl font-extrabold text-[#4B5E2D]">R$ ${precoFmt}</span>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="abrirModalProduto(${prod.id})" class="w-full py-2 bg-gray-100 hover:bg-gray-200 text-slate-700 text-xs font-bold rounded-lg transition">
+                  Detalhes
+                </button>
+                <button onclick="adicionarAoCarrinho(${prod.id})" class="w-full py-2 bg-[#96B23C] hover:bg-[#839d33] text-white text-xs font-bold rounded-lg transition flex items-center justify-center gap-1 shadow">
+                  Adicionar
+                </button>
+              </div>
+            </div>
           </div>
         `;
-        
-        container.innerHTML += card; // Adiciona o card na tela
+        container.appendChild(card);
+      });
+    }
+
+    function filtrarProdutos(cat) {
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-[#4B5E2D] text-white";
+        } else {
+          btn.className = "cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200";
+        }
       });
 
-    } catch (erro) {
-      console.error('Erro ao buscar servidor:', erro);
-      document.getElementById('lista-noticias').innerHTML = '<p class="text-red-500">Erro ao carregar sistema de notícias.</p>';
+      if (cat === 'Todos') {
+        renderizarProdutos(todosProdutos);
+      } else {
+        renderizarProdutos(todosProdutos.filter(p => p.categoria.toLowerCase() === cat.toLowerCase()));
+      }
     }
-  }
 
-  // Executa a função assim que o site abre
-  carregarNoticias();
-</script>
+    // --- DETALHES MODAL ---
+    function abrirModalProduto(id) {
+      const prod = todosProdutos.find(p => p.id == id);
+      if (!prod) return;
+
+      const precoFmt = parseFloat(prod.preco).toFixed(2).replace('.', ',');
+      const modalCont = document.getElementById('modalProdutoConteudo');
+      modalCont.innerHTML = `
+        <img src="${prod.imagem}" alt="${prod.nome}" class="w-full h-56 object-cover rounded-xl mb-4 border">
+        <span class="inline-block px-3 py-1 bg-emerald-100 text-[#4B5E2D] text-xs font-bold rounded-full mb-2">${prod.categoria}</span>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">${prod.nome}</h3>
+        <p class="text-sm text-gray-600 mb-6 leading-relaxed">${prod.descricao}</p>
+        
+        <div class="flex items-center justify-between border-t pt-4">
+          <div>
+            <span class="text-xs text-gray-400 block font-semibold">Preço à vista</span>
+            <span class="text-2xl font-extrabold text-[#4B5E2D]">R$ ${precoFmt}</span>
+          </div>
+          <button onclick="adicionarAoCarrinho(${prod.id}); fecharModalProduto();" class="bg-[#96B23C] hover:bg-[#839d33] text-white font-bold px-6 py-3 rounded-xl transition shadow">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+      `;
+      document.getElementById('produtoModal').classList.remove('hidden');
+    }
+
+    function fecharModalProduto() {
+      document.getElementById('produtoModal').classList.add('hidden');
+    }
+
+    // --- GERENCIAMENTO DO CARRINHO ---
+    function adicionarAoCarrinho(id) {
+      const prod = todosProdutos.find(p => p.id == id);
+      if (!prod) return;
+
+      const itemExistente = carrinho.find(item => item.id == id);
+      if (itemExistente) {
+        itemExistente.quantidade++;
+      } else {
+        carrinho.push({ ...prod, quantidade: 1 });
+      }
+
+      salvarCarrinho();
+      atualizarCarrinhoUI();
+      toggleCarrinhoDrawer(true);
+    }
+
+    function alterarQtdCarrinho(id, delta) {
+      const item = carrinho.find(i => i.id == id);
+      if (item) {
+        item.quantidade += delta;
+        if (item.quantidade <= 0) {
+          carrinho = carrinho.filter(i => i.id != id);
+        }
+        salvarCarrinho();
+        atualizarCarrinhoUI();
+      }
+    }
+
+    function removerDoCarrinho(id) {
+      carrinho = carrinho.filter(i => i.id != id);
+      salvarCarrinho();
+      atualizarCarrinhoUI();
+    }
+
+    function salvarCarrinho() {
+      localStorage.setItem('mais_gestao_carrinho', JSON.stringify(carrinho));
+    }
+
+    function atualizarCarrinhoUI() {
+      const countBadge = document.getElementById('cart-badge-count');
+      const container = document.getElementById('carrinhoItens');
+      const totalDisplay = document.getElementById('carrinhoTotal');
+
+      const totalQtd = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
+      const valorTotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+
+      countBadge.textContent = totalQtd;
+      totalDisplay.textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
+
+      if (carrinho.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-500 my-10">Seu carrinho está vazio.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      carrinho.forEach(item => {
+        const totalItemFmt = (parseFloat(item.preco) * item.quantidade).toFixed(2).replace('.', ',');
+        const el = document.createElement('div');
+        el.className = "flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 gap-3";
+        el.innerHTML = `
+          <img src="${item.imagem}" class="w-14 h-14 object-cover rounded-lg border">
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-xs text-slate-800 truncate">${item.nome}</h4>
+            <span class="text-xs text-[#4B5E2D] font-extrabold">R$ ${totalItemFmt}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center border rounded-lg bg-white">
+              <button onclick="alterarQtdCarrinho(${item.id}, -1)" class="px-2 py-0.5 text-xs font-bold text-gray-600 hover:bg-gray-100">-</button>
+              <span class="px-2 text-xs font-bold">${item.quantidade}</span>
+              <button onclick="alterarQtdCarrinho(${item.id}, 1)" class="px-2 py-0.5 text-xs font-bold text-gray-600 hover:bg-gray-100">+</button>
+            </div>
+            <button onclick="removerDoCarrinho(${item.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-1">✕</button>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function toggleCarrinhoDrawer(forceOpen = false) {
+      const drawer = document.getElementById('carrinhoDrawer');
+      if (forceOpen) {
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.toggle('hidden');
+      }
+    }
+
+    // --- CHECKOUT ---
+    function abrirCheckout() {
+      if (carrinho.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+      }
+      toggleCarrinhoDrawer(false);
+      const valorTotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+      document.getElementById('chkTotalDisplay').textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function fecharCheckout() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function alterarPagamentoView(metodo) {
+      const infoBox = document.getElementById('pagamento-info');
+      if (metodo === 'PIX') {
+        infoBox.innerHTML = `
+          <p class="font-bold">Chave PIX (Simulação):</p>
+          <p class="font-mono bg-white p-2 rounded mt-1 border text-center select-all">00020126580014br.gov.bcb.pix0136maisgestao-pix-demo</p>
+          <p class="mt-2 text-[11px] text-emerald-600">Ao clicar em "Confirmar Pedido", o pedido será registrado imediatamente.</p>
+        `;
+      } else if (metodo === 'Cartão de Crédito') {
+        infoBox.innerHTML = `
+          <div class="space-y-2 text-slate-700">
+            <input type="text" placeholder="Número do Cartão" class="w-full p-2 border rounded text-xs">
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" placeholder="MM/AA" class="p-2 border rounded text-xs">
+              <input type="text" placeholder="CVV" class="p-2 border rounded text-xs">
+            </div>
+          </div>
+        `;
+      } else {
+        infoBox.innerHTML = `
+          <p class="text-xs text-blue-800">Seu pedido será enviado via mensagem direta ao nosso canal de atendimento no WhatsApp para finalização rápida.</p>
+        `;
+      }
+    }
+
+    async function processarPedido(e) {
+      e.preventDefault();
+      const nome = document.getElementById('chk-nome').value;
+      const email = document.getElementById('chk-email').value;
+      const forma_pagamento = document.getElementById('chk-pagamento').value;
+      const valorTotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+
+      try {
+        const resposta = await fetch(`${API_URL}/pedidos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cliente_nome: nome,
+            cliente_email: email,
+            total: valorTotal,
+            forma_pagamento,
+            itens: carrinho
+          })
+        });
+
+        if (resposta.ok) {
+          alert('🎉 Pedido realizado com sucesso! Obrigado por adquirir nossos conteúdos.');
+          carrinho = [];
+          salvarCarrinho();
+          atualizarCarrinhoUI();
+          fecharCheckout();
+        } else {
+          alert('❌ Não foi possível registrar o pedido.');
+        }
+      } catch (err) {
+        alert('🎉 Pedido simulado com sucesso! (Servidor operando em modo offline)');
+        carrinho = [];
+        salvarCarrinho();
+        atualizarCarrinhoUI();
+        fecharCheckout();
+      }
+    }
+
+    // Inicialização ao carregar a página
+    carregarNoticias();
+    carregarProdutos();
+    atualizarCarrinhoUI();
+  </script>
 
 </body>
+
 </html>

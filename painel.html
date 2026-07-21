@@ -3,55 +3,290 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Coordenador - Mais Gestão</title>
+  <title>Painel Administrativo - Mais Gestão</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', sans-serif; }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-100 min-h-screen text-slate-800 flex flex-col">
 
-  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-    <h1 class="text-2xl font-bold text-[#4B5E2D] mb-6">Publicar Nova Notícia</h1>
-    
-    <form id="formNoticia" class="space-y-5">
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-1">Título da Notícia</label>
-        <input type="text" id="titulo" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="Ex: Resultado do processo seletivo">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="img/nlogo.png" alt="Logo" class="h-12 w-auto object-contain">
+        <h1 class="text-xl font-bold text-[#4B5E2D]">Painel do Coordenador</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <div id="user-status" class="hidden text-xs bg-emerald-50 text-[#4B5E2D] font-bold px-3 py-1.5 rounded-full border border-emerald-200">
+          Admin Conectado
+        </div>
+        <button id="logout-btn" onclick="fazerLogout()" class="hidden text-xs text-red-600 font-bold hover:underline">
+          Sair
+        </button>
+        <a href="index.html" class="inline-flex items-center gap-1 text-sm font-semibold text-[#4B5E2D] hover:text-[#96B23C] transition">
+          &larr; Voltar ao Site
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEÇÃO DE LOGIN -->
+  <div id="section-login" class="flex-1 flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+      <div class="text-center mb-6">
+        <img src="img/nlogo.png" alt="Logo" class="h-16 mx-auto object-contain mb-3">
+        <h2 class="text-2xl font-extrabold text-[#4B5E2D]">Acesso ao Painel</h2>
+        <p class="text-xs text-gray-500 mt-1">Insira suas credenciais de coordenador para continuar.</p>
       </div>
 
-      <div>
-        <label class="block text-sm font-bold text-gray-700 mb-1">Conteúdo</label>
-        <textarea id="conteudo" rows="5" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="Escreva o texto da notícia aqui..."></textarea>
-      </div>
+      <form id="formLogin" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Usuário</label>
+          <input type="text" id="login-usuario" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]" placeholder="admin">
+        </div>
 
-      <button type="submit" class="w-full bg-[#4B5E2D] text-white font-bold py-3 rounded-lg hover:bg-[#3A4923] transition">
-        Publicar no Site
-      </button>
-      
-      <p id="mensagem" class="text-center font-bold text-sm hidden"></p>
-    </form>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Senha</label>
+          <input type="password" id="login-senha" required class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]" placeholder="••••••••">
+        </div>
+
+        <button type="submit" class="w-full bg-[#4B5E2D] hover:bg-[#3A4923] text-white font-bold py-3 rounded-xl transition shadow text-sm">
+          Entrar no Painel
+        </button>
+        
+        <p id="msg-login" class="text-center font-bold text-xs hidden mt-2"></p>
+      </form>
+
+      <div class="mt-6 p-3 bg-gray-50 border border-gray-200 rounded-xl text-center">
+        <p class="text-[11px] text-gray-500 font-medium">Credenciais de teste:</p>
+        <p class="text-xs font-mono font-bold text-[#4B5E2D] mt-0.5">Usuário: admin | Senha: admin123</p>
+      </div>
+    </div>
   </div>
 
-  <script>
-    // JavaScript que envia o formulário para a API
-    document.getElementById('formNoticia').addEventListener('submit', async function(e) {
-      e.preventDefault(); // Impede a página de recarregar
+  <!-- CONTEÚDO PRINCIPAL (RESTRITO) -->
+  <main id="section-admin" class="max-w-6xl mx-auto px-4 py-8 w-full hidden flex-1">
+
+    <!-- Navegação de Abas -->
+    <div class="flex border-b border-gray-200 mb-8 bg-white rounded-t-xl p-2 shadow-sm">
+      <button id="tab-noticias-btn" onclick="switchTab('noticias')" class="flex-1 py-3 px-6 text-center font-bold rounded-lg transition text-white bg-[#4B5E2D]">
+        Gerenciar Notícias
+      </button>
+      <button id="tab-produtos-btn" onclick="switchTab('produtos')" class="flex-1 py-3 px-6 text-center font-bold rounded-lg transition text-gray-600 hover:text-[#4B5E2D]">
+        Gerenciar Loja / Produtos
+      </button>
+    </div>
+
+    <!-- SEÇÃO NOTÍCIAS -->
+    <div id="section-noticias" class="space-y-8">
+      <div class="bg-white p-6 md:p-8 rounded-xl shadow-md max-w-2xl mx-auto border border-gray-100">
+        <h2 class="text-2xl font-bold text-[#4B5E2D] mb-6 flex items-center gap-2">
+          <span>Nova Notícia</span>
+        </h2>
+        
+        <form id="formNoticia" class="space-y-5">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Título da Notícia</label>
+            <input type="text" id="titulo" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="Ex: Resultado do processo seletivo">
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Conteúdo</label>
+            <textarea id="conteudo" rows="5" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="Escreva o texto da notícia aqui..."></textarea>
+          </div>
+
+          <button type="submit" class="w-full bg-[#4B5E2D] hover:bg-[#3A4923] text-white font-bold py-3 rounded-lg transition shadow">
+            Publicar Notícia
+          </button>
+          
+          <p id="mensagem" class="text-center font-bold text-sm hidden"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- SEÇÃO PRODUTOS -->
+    <div id="section-produtos" class="hidden space-y-8">
       
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Formulário de cadastro de produto -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100 lg:col-span-1 h-fit">
+          <h2 class="text-xl font-bold text-[#4B5E2D] mb-6">Cadastrar Produto</h2>
+          
+          <form id="formProduto" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Nome do Produto</label>
+              <input type="text" id="prod-nome" class="w-full px-3 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="Ex: Apostila de Gestão 2026">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Categoria</label>
+              <select id="prod-categoria" class="w-full px-3 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required>
+                <option value="Cursos">Cursos</option>
+                <option value="Livros">Livros & Apostilas</option>
+                <option value="Acessórios">Acessórios</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Preço (R$)</label>
+                <input type="number" step="0.01" id="prod-preco" class="w-full px-3 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="99.90">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Estoque</label>
+                <input type="number" id="prod-estoque" class="w-full px-3 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" value="10" min="1" required>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">URL da Imagem (opcional)</label>
+              <input type="url" id="prod-imagem" class="w-full px-3 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" placeholder="https://exemplo.com/imagem.jpg">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Descrição</label>
+              <textarea id="prod-descricao" rows="3" class="w-full px-3 py-2 border text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[#96B23C]" required placeholder="Breve resumo do produto..."></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-[#96B23C] hover:bg-[#839d33] text-white font-bold py-2.5 rounded-lg transition shadow text-sm">
+              Adicionar Produto à Loja
+            </button>
+            
+            <p id="msg-produto" class="text-center font-bold text-sm hidden"></p>
+          </form>
+        </div>
+
+        <!-- Tabela de produtos existentes -->
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-100 lg:col-span-2">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-[#4B5E2D]">Produtos no Catálogo</h2>
+            <button onclick="carregarProdutosPainel()" class="text-xs font-semibold text-[#96B23C] hover:underline">Atualizar</button>
+          </div>
+
+          <div id="lista-produtos-painel" class="space-y-4">
+            <p class="text-sm text-gray-500">Carregando produtos...</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    let adminToken = sessionStorage.getItem('maisgestao_token') || null;
+
+    function checarAutenticacao() {
+      const loginSec = document.getElementById('section-login');
+      const adminSec = document.getElementById('section-admin');
+      const userStatus = document.getElementById('user-status');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      if (adminToken) {
+        loginSec.classList.add('hidden');
+        adminSec.classList.remove('hidden');
+        userStatus.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+      } else {
+        loginSec.classList.remove('hidden');
+        adminSec.classList.add('hidden');
+        userStatus.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+      }
+    }
+
+    // Login Form
+    document.getElementById('formLogin').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const usuario = document.getElementById('login-usuario').value;
+      const senha = document.getElementById('login-senha').value;
+      const msgElement = document.getElementById('msg-login');
+
+      try {
+        const resposta = await fetch(`${API_URL}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usuario, senha })
+        });
+
+        const dados = await resposta.json();
+
+        if (resposta.ok && dados.token) {
+          adminToken = dados.token;
+          sessionStorage.setItem('maisgestao_token', adminToken);
+          msgElement.classList.add('hidden');
+          checarAutenticacao();
+        } else {
+          msgElement.textContent = `❌ ${dados.erro || 'Falha no login'}`;
+          msgElement.className = "text-center font-bold text-xs text-red-600 block mt-2";
+        }
+      } catch (err) {
+        msgElement.textContent = "❌ Erro ao comunicar com servidor.";
+        msgElement.className = "text-center font-bold text-xs text-red-600 block mt-2";
+      }
+    });
+
+    function fazerLogout() {
+      adminToken = null;
+      sessionStorage.removeItem('maisgestao_token');
+      checarAutenticacao();
+    }
+
+    function switchTab(tab) {
+      const noticiasSec = document.getElementById('section-noticias');
+      const produtosSec = document.getElementById('section-produtos');
+      const noticiasBtn = document.getElementById('tab-noticias-btn');
+      const produtosBtn = document.getElementById('tab-produtos-btn');
+
+      if (tab === 'noticias') {
+        noticiasSec.classList.remove('hidden');
+        produtosSec.classList.add('hidden');
+        noticiasBtn.className = "flex-1 py-3 px-6 text-center font-bold rounded-lg transition text-white bg-[#4B5E2D]";
+        produtosBtn.className = "flex-1 py-3 px-6 text-center font-bold rounded-lg transition text-gray-600 hover:text-[#4B5E2D]";
+      } else {
+        noticiasSec.classList.add('hidden');
+        produtosSec.classList.remove('hidden');
+        produtosBtn.className = "flex-1 py-3 px-6 text-center font-bold rounded-lg transition text-white bg-[#4B5E2D]";
+        noticiasBtn.className = "flex-1 py-3 px-6 text-center font-bold rounded-lg transition text-gray-600 hover:text-[#4B5E2D]";
+        carregarProdutosPainel();
+      }
+    }
+
+    // Formulário de Notícia Protegido
+    document.getElementById('formNoticia').addEventListener('submit', async function(e) {
+      e.preventDefault();
       const titulo = document.getElementById('titulo').value;
       const conteudo = document.getElementById('conteudo').value;
       const msgElement = document.getElementById('mensagem');
 
       try {
-        const resposta = await fetch('http://localhost:3000/api/noticias', {
+        const resposta = await fetch(`${API_URL}/noticias`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ titulo, conteudo }) // Transforma os dados em JSON
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({ titulo, conteudo })
         });
+
+        const resDados = await resposta.json();
 
         if (resposta.ok) {
           msgElement.textContent = "✅ Notícia publicada com sucesso!";
           msgElement.className = "text-center font-bold text-sm text-green-600 block mt-4";
-          document.getElementById('formNoticia').reset(); // Limpa os campos
+          document.getElementById('formNoticia').reset();
         } else {
-          msgElement.textContent = "❌ Ocorreu um erro ao publicar.";
+          msgElement.textContent = `❌ ${resDados.erro || 'Erro ao publicar notícia.'}`;
           msgElement.className = "text-center font-bold text-sm text-red-600 block mt-4";
         }
       } catch (erro) {
@@ -59,7 +294,103 @@
         msgElement.className = "text-center font-bold text-sm text-red-600 block mt-4";
       }
     });
+
+    // Formulário de Produto Protegido
+    document.getElementById('formProduto').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const nome = document.getElementById('prod-nome').value;
+      const categoria = document.getElementById('prod-categoria').value;
+      const preco = parseFloat(document.getElementById('prod-preco').value);
+      const estoque = parseInt(document.getElementById('prod-estoque').value);
+      const imagem = document.getElementById('prod-imagem').value;
+      const descricao = document.getElementById('prod-descricao').value;
+      const msgElement = document.getElementById('msg-produto');
+
+      try {
+        const resposta = await fetch(`${API_URL}/produtos`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({ nome, categoria, preco, estoque, imagem, descricao })
+        });
+
+        const resDados = await resposta.json();
+
+        if (resposta.ok) {
+          msgElement.textContent = "✅ Produto cadastrado!";
+          msgElement.className = "text-center font-bold text-sm text-green-600 block mt-2";
+          document.getElementById('formProduto').reset();
+          carregarProdutosPainel();
+        } else {
+          msgElement.textContent = `❌ ${resDados.erro || 'Erro ao cadastrar produto.'}`;
+          msgElement.className = "text-center font-bold text-sm text-red-600 block mt-2";
+        }
+      } catch (erro) {
+        msgElement.textContent = "❌ Servidor fora do ar.";
+        msgElement.className = "text-center font-bold text-sm text-red-600 block mt-2";
+      }
+    });
+
+    // Carregar Lista de Produtos no Painel
+    async function carregarProdutosPainel() {
+      const container = document.getElementById('lista-produtos-painel');
+      try {
+        const resposta = await fetch(`${API_URL}/produtos`);
+        const produtos = await resposta.json();
+        
+        container.innerHTML = '';
+        if (produtos.length === 0) {
+          container.innerHTML = '<p class="text-sm text-gray-500">Nenhum produto cadastrado.</p>';
+          return;
+        }
+
+        produtos.forEach(prod => {
+          const card = document.createElement('div');
+          card.className = "flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-[#96B23C] transition gap-4";
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <img src="${prod.imagem || 'https://via.placeholder.com/60'}" class="w-12 h-12 object-cover rounded-md border" alt="${prod.nome}">
+              <div>
+                <h4 class="font-bold text-sm text-slate-800">${prod.nome}</h4>
+                <span class="inline-block px-2 py-0.5 bg-gray-200 text-slate-600 rounded text-xs font-semibold">${prod.categoria}</span>
+                <span class="text-xs text-gray-500 ml-2">Estoque: ${prod.estoque}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="font-extrabold text-sm text-[#4B5E2D]">R$ ${parseFloat(prod.preco).toFixed(2).replace('.', ',')}</span>
+              <button onclick="deletarProduto(${prod.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 rounded bg-red-50 border border-red-200">Deletar</button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (e) {
+        container.innerHTML = '<p class="text-sm text-red-500">Erro ao buscar produtos da API.</p>';
+      }
+    }
+
+    async function deletarProduto(id) {
+      if (!confirm('Deseja realmente excluir este produto?')) return;
+      try {
+        const resposta = await fetch(`${API_URL}/produtos/${id}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+        if (resposta.ok) {
+          carregarProdutosPainel();
+        } else {
+          alert('Erro ao excluir produto (Não autorizado).');
+        }
+      } catch(e) {
+        alert('Erro ao comunicar com servidor.');
+      }
+    }
+
+    // Checar autenticação na abertura do painel
+    checarAutenticacao();
   </script>
 
 </body>
 </html>
+
