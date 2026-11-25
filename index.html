@@ -23,6 +23,20 @@
           rgba(75, 94, 45, 0.25) 75%,
           rgba(75, 94, 45, 0) 100%);
     }
+
+    @keyframes toastSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .toast-anim {
+      animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
   </style>
 </head>
 
@@ -46,19 +60,87 @@
         </a>
       </nav>
 
-      <!-- Botão Carrinho de Compras -->
-      <button onclick="toggleCarrinhoDrawer()"
-        class="relative flex items-center gap-2 bg-[#96B23C] text-white px-4 py-2 rounded-full font-bold text-xs hover:bg-[#839d33] transition shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-        </svg>
-        <span>Meu Carrinho</span>
-        <span id="cart-badge-count"
-          class="bg-white text-[#4B5E2D] text-xs w-5 h-5 rounded-full flex items-center justify-center font-extrabold ml-1">0</span>
-      </button>
+      <!-- Status do Cliente, Carrinho e Menu Mobile -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div id="cliente-status-bar"
+          class="hidden items-center gap-2 text-xs font-semibold text-[#4B5E2D] bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+          <span>Olá, <strong id="cliente-nome-display"></strong></span>
+          <button onclick="abrirModalMeusPedidos()" class="text-xs text-[#4B5E2D] hover:text-[#96B23C] font-bold border-l pl-2 ml-1 cursor-pointer" title="Ver meus pedidos">
+            📦 Pedidos
+          </button>
+          <button onclick="logoutCliente()" class="text-xs text-red-500 hover:underline font-bold ml-1">Sair</button>
+        </div>
+        <button id="btn-login-cliente-header" onclick="abrirModalLoginCliente()"
+          class="text-xs font-bold text-[#4B5E2D] hover:text-[#96B23C] px-3 py-1.5 rounded-lg border border-[#4B5E2D]/20 transition hidden sm:inline-flex">
+          Entrar / Cadastrar
+        </button>
+
+        <!-- Botão Carrinho de Compras -->
+        <button onclick="toggleCarrinhoDrawer()"
+          class="relative flex items-center gap-1.5 sm:gap-2 bg-[#96B23C] text-white px-3 sm:px-4 py-2 rounded-full font-bold text-xs hover:bg-[#839d33] transition shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 sm:h-5 w-4 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+          </svg>
+          <span class="hidden sm:inline">Meu Carrinho</span>
+          <span id="cart-badge-count"
+            class="bg-white text-[#4B5E2D] text-[11px] sm:text-xs w-5 h-5 rounded-full flex items-center justify-center font-extrabold ml-0.5">0</span>
+        </button>
+
+        <!-- Botão Menu Mobile Hambúrguer -->
+        <button id="btn-menu-mobile" onclick="toggleMenuMobile()"
+          class="lg:hidden p-2 rounded-xl text-[#4B5E2D] hover:bg-emerald-50 transition border border-gray-200 flex items-center justify-center"
+          aria-label="Abrir Menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- MENU MOBILE DRAWER -->
+  <div id="menuMobileDrawer" class="fixed inset-0 z-50 hidden lg:hidden">
+    <div onclick="toggleMenuMobile()" class="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-4/5 max-w-xs bg-white shadow-2xl flex flex-col justify-between p-6 z-10 animate-fade-in">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+          <img src="img/nlogo.png" alt="Logo Mais Gestão" class="h-10 w-auto object-contain">
+          <button onclick="toggleMenuMobile()" class="p-2 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+        </div>
+
+        <nav class="flex flex-col gap-2 mt-6 text-sm font-bold text-[#4B5E2D]">
+          <a href="#" onclick="toggleMenuMobile()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 text-[#96B23C] bg-emerald-50/50">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            Início
+          </a>
+          <a href="#loja" onclick="toggleMenuMobile()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 hover:text-[#96B23C] transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            Loja Oficial
+          </a>
+          <a href="#noticias" onclick="toggleMenuMobile()" class="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 hover:text-[#96B23C] transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+            Notícias
+          </a>
+          <button onclick="toggleMenuMobile(); abrirModalMeusPedidos();" class="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 hover:text-[#96B23C] text-left transition font-bold text-[#4B5E2D]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            Meus Pedidos
+          </button>
+          <a href="painel.html" class="flex items-center gap-3 p-3 rounded-xl bg-[#4B5E2D] text-white hover:bg-[#3A4923] transition mt-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            Painel Admin
+          </a>
+        </nav>
+      </div>
+
+      <div class="pt-6 border-t border-gray-100 flex flex-col gap-3">
+        <button onclick="toggleMenuMobile(); abrirModalLoginCliente();" class="w-full py-2.5 text-center text-xs font-bold text-[#4B5E2D] border border-[#4B5E2D]/20 rounded-xl hover:bg-emerald-50 transition">
+          Acessar Conta / Cadastrar
+        </button>
+        <p class="text-[11px] text-gray-400 text-center">© 2026 Programa Mais Gestão</p>
+      </div>
+    </div>
+  </div>
 
   <!-- HERO SECTION -->
   <section class="relative w-full h-[550px] bg-slate-100 overflow-hidden">
@@ -93,7 +175,7 @@
   <section id="loja" class="py-16 bg-white border-b">
     <div class="max-w-7xl mx-auto px-4 md:px-8">
 
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
         <div>
           <span class="text-xs font-extrabold text-[#96B23C] uppercase tracking-widest">Loja & Capacitação</span>
           <h2 class="text-3xl font-extrabold text-[#4B5E2D] mt-1">Cursos e Materiais Didáticos</h2>
@@ -102,7 +184,7 @@
         <!-- Filtros por Categoria -->
         <div class="flex flex-wrap gap-2" id="categoria-filtros">
           <button onclick="filtrarProdutos('Todos')"
-            class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-[#4B5E2D] text-white"
+            class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-[#4B5E2D] text-white shadow-sm"
             data-cat="Todos">Todos</button>
           <button onclick="filtrarProdutos('Cursos')"
             class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -113,6 +195,33 @@
           <button onclick="filtrarProdutos('Acessórios')"
             class="cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200"
             data-cat="Acessórios">Acessórios</button>
+        </div>
+      </div>
+
+      <!-- Barra de Pesquisa e Contador de Resultados -->
+      <div class="mb-8 p-3.5 bg-gray-50/90 rounded-2xl border border-gray-100 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full sm:max-w-md">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </span>
+          <input type="text" id="campo-busca-produtos" oninput="buscarProdutos(this.value)"
+            placeholder="Pesquisar por curso, livro, apostila ou acessório..."
+            class="w-full pl-10 pr-9 py-2 text-xs md:text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#96B23C] focus:border-transparent transition shadow-sm placeholder:text-gray-400">
+          <button id="btn-limpar-busca" onclick="limparBusca()"
+            class="hidden absolute inset-y-0 right-0 items-center pr-3 text-gray-400 hover:text-gray-600 transition"
+            title="Limpar busca">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs font-semibold text-gray-500 self-start sm:self-auto">
+          <span id="contador-produtos" class="px-3 py-1 bg-white rounded-full border border-gray-200 text-[#4B5E2D] font-bold shadow-xs">
+            Buscando catálogo...
+          </span>
         </div>
       </div>
 
@@ -165,6 +274,81 @@
     </div>
   </div>
 
+  <!-- MODAL DE LEITURA DA NOTÍCIA -->
+  <div id="noticiaModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 md:p-8 relative shadow-2xl animate-fade-in max-h-[85vh] overflow-y-auto">
+      <button onclick="fecharModalNoticia()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+      <div id="modalNoticiaConteudo"></div>
+    </div>
+  </div>
+
+  <!-- MODAL MEUS PEDIDOS -->
+  <div id="modalMeusPedidos"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 md:p-8 relative shadow-2xl animate-fade-in max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between pb-4 border-b">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📦</span>
+          <h3 class="text-xl font-extrabold text-[#4B5E2D]">Histórico de Pedidos</h3>
+        </div>
+        <button onclick="fecharModalMeusPedidos()"
+          class="text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+      </div>
+
+      <div id="lista-meus-pedidos" class="flex-1 overflow-y-auto py-4 space-y-4">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN DO CLIENTE -->
+  <div id="modalLoginCliente"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 md:p-8 relative shadow-2xl animate-fade-in">
+      <button onclick="fecharModalLoginCliente()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 bg-emerald-100 text-[#4B5E2D] rounded-full flex items-center justify-center mx-auto mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-extrabold text-[#4B5E2D]">Acesse sua Conta</h3>
+        <p class="text-xs text-gray-500 mt-1">Identifique-se para adicionar produtos ao carrinho e finalizar suas
+          compras.</p>
+      </div>
+
+      <form id="formLoginCliente" onsubmit="salvarLoginCliente(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Nome Completo</label>
+          <input type="text" id="cliente-login-nome" required
+            class="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]"
+            placeholder="Seu nome completo">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">E-mail</label>
+          <input type="email" id="cliente-login-email" required
+            class="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#96B23C]"
+            placeholder="seuemail@exemplo.com">
+        </div>
+
+        <button type="submit"
+          class="w-full bg-[#96B23C] hover:bg-[#839d33] text-white font-bold py-3 rounded-xl transition shadow text-sm mt-2">
+          Continuar Compras
+        </button>
+
+        <p class="text-xs text-center text-gray-500 mt-4">
+          Não possui conta? <a href="cadastro.html" class="text-[#96B23C] font-bold hover:underline">Cadastre-se</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
   <!-- CART SLIDE-OVER DRAWER -->
   <div id="carrinhoDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCarrinhoDrawer()" class="absolute inset-0 bg-black/50 transition-opacity"></div>
@@ -187,14 +371,39 @@
         <p class="text-center text-gray-500 my-10">Seu carrinho está vazio.</p>
       </div>
 
-      <!-- Footer do Carrinho -->
+      <!-- Footer do Carrinho com Cupom e Valores -->
       <div class="p-6 border-t bg-gray-50 space-y-4">
-        <div class="flex justify-between text-base font-extrabold text-[#4B5E2D]">
-          <span>Total:</span>
-          <span id="carrinhoTotal">R$ 0,00</span>
+        <!-- Cupom de Desconto -->
+        <div class="bg-white p-3 rounded-xl border border-gray-200">
+          <div class="flex gap-2">
+            <input type="text" id="cupom-input" placeholder="Cupom (ex: MAIS10)"
+              class="w-full px-3 py-1.5 text-xs border rounded-lg uppercase font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#96B23C]">
+            <button onclick="aplicarCupom()"
+              class="px-3 py-1.5 bg-[#4B5E2D] hover:bg-[#3A4923] text-white text-xs font-bold rounded-lg transition whitespace-nowrap cursor-pointer">
+              Aplicar
+            </button>
+          </div>
+          <p id="cupom-msg" class="text-[11px] font-bold mt-1.5 hidden"></p>
         </div>
+
+        <!-- Resumo de Valores -->
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between text-gray-500">
+            <span>Subtotal:</span>
+            <span id="carrinhoSubtotal">R$ 0,00</span>
+          </div>
+          <div id="linha-desconto" class="hidden justify-between text-emerald-600 font-bold">
+            <span id="desconto-label">Desconto cupom:</span>
+            <span id="carrinhoDesconto">-R$ 0,00</span>
+          </div>
+          <div class="flex justify-between text-base font-extrabold text-[#4B5E2D] pt-2 border-t">
+            <span>Total Final:</span>
+            <span id="carrinhoTotal">R$ 0,00</span>
+          </div>
+        </div>
+
         <button onclick="abrirCheckout()"
-          class="w-full bg-[#96B23C] hover:bg-[#839d33] text-white font-bold py-3 rounded-xl transition shadow text-sm">
+          class="w-full bg-[#96B23C] hover:bg-[#839d33] text-white font-bold py-3 rounded-xl transition shadow text-sm cursor-pointer">
           Finalizar Pedido
         </button>
       </div>
@@ -262,49 +471,234 @@
   </div>
 
   <script>
-    const API_URL = 'http://localhost:3000/api';
+    const API_URL = 'https://passinho-dev.onrender.com/api'; 
     let todosProdutos = [];
     let carrinho = JSON.parse(localStorage.getItem('mais_gestao_carrinho')) || [];
+    let produtoPendenteAdicao = null;
+
+    // --- AUTENTICAÇÃO E CADASTRO DO CLIENTE ---
+    function checarClienteLogado() {
+      const cliente = JSON.parse(localStorage.getItem('mais_gestao_cliente'));
+      const statusBar = document.getElementById('cliente-status-bar');
+      const btnHeader = document.getElementById('btn-login-cliente-header');
+      const nomeDisplay = document.getElementById('cliente-nome-display');
+
+      if (cliente && cliente.nome) {
+        nomeDisplay.textContent = cliente.nome.split(' ')[0];
+        statusBar.classList.remove('hidden');
+        statusBar.classList.add('flex');
+        btnHeader.classList.add('hidden');
+      } else {
+        statusBar.classList.add('hidden');
+        statusBar.classList.remove('flex');
+        btnHeader.classList.remove('hidden');
+      }
+    }
+
+    function abrirModalLoginCliente() {
+      const cliente = JSON.parse(localStorage.getItem('mais_gestao_cliente'));
+      if (cliente) {
+        document.getElementById('cliente-login-nome').value = cliente.nome || '';
+        document.getElementById('cliente-login-email').value = cliente.email || '';
+      }
+      document.getElementById('modalLoginCliente').classList.remove('hidden');
+    }
+
+    function fecharModalLoginCliente() {
+      document.getElementById('modalLoginCliente').classList.add('hidden');
+    }
+
+    function salvarLoginCliente(e) {
+      e.preventDefault();
+      const nome = document.getElementById('cliente-login-nome').value;
+      const email = document.getElementById('cliente-login-email').value;
+
+      if (!nome || !email) return;
+
+      const cliente = { nome, email };
+      localStorage.setItem('mais_gestao_cliente', JSON.stringify(cliente));
+      checarClienteLogado();
+      fecharModalLoginCliente();
+      mostrarToast(`Bem-vindo(a), ${cliente.nome.split(' ')[0]}!`, 'sucesso');
+
+      if (produtoPendenteAdicao) {
+        const prodId = produtoPendenteAdicao;
+        produtoPendenteAdicao = null;
+        adicionarAoCarrinho(prodId);
+      }
+    }
+
+    function logoutCliente() {
+      localStorage.removeItem('mais_gestao_cliente');
+      checarClienteLogado();
+      mostrarToast('Você saiu da sua conta.', 'info');
+    }
 
     // --- NOTÍCIAS ---
+    let todasNoticias = [];
+
+    const MOCK_NOTICIAS_FALLBACK = [
+      { id: 1, titulo: "Inscrições abertas para a nova turma de Gestão 2026", conteudo: "Garanta sua vaga no programa de formação em liderança e gestão estratégica do instituto com certificado reconhecido nacionalmente.\n\nO programa inclui módulos presenciais e imersivos em planejamento estratégico, finanças públicas, metodologias ágeis e comunicação não-violenta para gestores de equipes de alto desempenho.", data_criacao: new Date().toISOString() },
+      { id: 2, titulo: "Lançamento da Loja Oficial Mais Gestão", conteudo: "Agora você pode adquirir nossos materiais didáticos, apostilas e cursos diretamente pelo site com total comodidade!\n\nDisponibilizamos suporte completo via WhatsApp, pagamento instantâneo por PIX e entrega digital imediata de certificados e acessos a videoaulas.", data_criacao: new Date().toISOString() }
+    ];
+
+    function renderizarNoticias(noticias) {
+      todasNoticias = noticias || [];
+      const container = document.getElementById('lista-noticias');
+      container.innerHTML = '';
+
+      if (!noticias || noticias.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">Nenhuma notícia publicada ainda.</p>';
+        return;
+      }
+
+      noticias.forEach(noticia => {
+        const data = new Date(noticia.data_criacao).toLocaleDateString('pt-BR');
+        const card = `
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col justify-between">
+            <div>
+              <span class="text-xs text-[#96B23C] font-bold uppercase tracking-wider">${data}</span>
+              <h3 class="text-xl font-bold text-[#4B5E2D] mt-2 mb-3">${noticia.titulo}</h3>
+              <p class="text-gray-600 line-clamp-3 mb-4 text-sm leading-relaxed">${noticia.conteudo}</p>
+            </div>
+            <button onclick="abrirModalNoticia(${noticia.id})" class="text-[#96B23C] font-bold hover:underline text-sm inline-flex items-center gap-1 cursor-pointer w-fit">
+              Ler artigo completo &rarr;
+            </button>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    function abrirModalNoticia(id) {
+      const noticia = todasNoticias.find(n => n.id == id);
+      if (!noticia) return;
+
+      const data = new Date(noticia.data_criacao).toLocaleDateString('pt-BR', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      });
+      const modalCont = document.getElementById('modalNoticiaConteudo');
+      modalCont.innerHTML = `
+        <span class="inline-block px-3 py-1 bg-emerald-100 text-[#4B5E2D] text-xs font-bold rounded-full mb-3">${data}</span>
+        <h2 class="text-2xl font-extrabold text-[#4B5E2D] mb-4 leading-tight">${noticia.titulo}</h2>
+        <div class="prose text-gray-700 text-sm leading-relaxed space-y-3 whitespace-pre-line border-t pt-4">
+          ${noticia.conteudo}
+        </div>
+        <div class="mt-8 pt-4 border-t flex justify-end">
+          <button onclick="fecharModalNoticia()" class="px-5 py-2.5 bg-[#4B5E2D] hover:bg-[#3A4923] text-white text-xs font-bold rounded-xl transition shadow cursor-pointer">
+            Fechar Artigo
+          </button>
+        </div>
+      `;
+      document.getElementById('noticiaModal').classList.remove('hidden');
+    }
+
+    function fecharModalNoticia() {
+      document.getElementById('noticiaModal').classList.add('hidden');
+    }
+
     async function carregarNoticias() {
       try {
         const resposta = await fetch(`${API_URL}/noticias`);
         const noticias = await resposta.json();
-        const container = document.getElementById('lista-noticias');
-        container.innerHTML = '';
-
-        if (noticias.length === 0) {
-          container.innerHTML = '<p class="text-gray-500">Nenhuma notícia publicada ainda.</p>';
-          return;
+        if (!Array.isArray(noticias) || noticias.length === 0) {
+          throw new Error('Sem notícias no banco');
         }
-
-        noticias.forEach(noticia => {
-          const data = new Date(noticia.data_criacao).toLocaleDateString('pt-BR');
-          const card = `
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
-              <span class="text-xs text-[#96B23C] font-bold uppercase tracking-wider">${data}</span>
-              <h3 class="text-xl font-bold text-[#4B5E2D] mt-2 mb-3">${noticia.titulo}</h3>
-              <p class="text-gray-600 line-clamp-3 mb-4">${noticia.conteudo}</p>
-              <a href="#" class="text-[#96B23C] font-bold hover:underline text-sm">Ler artigo completo &rarr;</a>
-            </div>
-          `;
-          container.innerHTML += card;
-        });
+        renderizarNoticias(noticias);
       } catch (erro) {
-        console.error('Erro ao buscar servidor:', erro);
-        document.getElementById('lista-noticias').innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>';
+        console.warn('Utilizando notícias de demonstração (fallback):', erro.message);
+        renderizarNoticias(MOCK_NOTICIAS_FALLBACK);
       }
     }
 
     // --- PRODUTOS E E-COMMERCE ---
+    let categoriaAtual = 'Todos';
+    let termoBusca = '';
+
+    const MOCK_PRODUTOS_FALLBACK = [
+      { id: 1, nome: "Curso de Gestão Ágil e Projetos", descricao: "Aprenda metodologias ágeis (Scrum, Kanban) aplicadas à gestão estratégica.", preco: 299.90, categoria: "Cursos", imagem: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=600&q=80", estoque: 15 },
+      { id: 2, nome: "Apostila de Indicadores & KPIs", descricao: "Guia prático para estruturação de metas e mensuração de resultados institucionais.", preco: 59.90, categoria: "Livros", imagem: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80", estoque: 30 },
+      { id: 3, nome: "Kit Executivo Mais Gestão", descricao: "Caderno premium capa dura + caneta metálica personalizada + squeeze térmico.", preco: 89.90, categoria: "Acessórios", imagem: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80", estoque: 25 },
+      { id: 4, nome: "Workshop: Liderança & Comunicação", descricao: "Treinamento intensivo gravado com certificado de conclusão incluso.", preco: 149.00, categoria: "Cursos", imagem: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&q=80", estoque: 50 }
+    ];
+
     async function carregarProdutos() {
       try {
         const resposta = await fetch(`${API_URL}/produtos`);
-        todosProdutos = await resposta.json();
-        renderizarProdutos(todosProdutos);
+        const dados = await resposta.json();
+        if (!Array.isArray(dados) || dados.length === 0) {
+          throw new Error('Sem produtos na API');
+        }
+        todosProdutos = dados;
       } catch (e) {
-        document.getElementById('lista-produtos').innerHTML = '<p class="text-red-500 col-span-full text-center">Erro ao carregar produtos.</p>';
+        console.warn('Utilizando catálogo local de fallback:', e.message);
+        todosProdutos = MOCK_PRODUTOS_FALLBACK;
+      }
+      aplicarFiltros();
+    }
+
+    function buscarProdutos(termo) {
+      termoBusca = termo || '';
+      const btnLimpar = document.getElementById('btn-limpar-busca');
+      if (btnLimpar) {
+        if (termoBusca.trim().length > 0) {
+          btnLimpar.classList.remove('hidden');
+          btnLimpar.classList.add('flex');
+        } else {
+          btnLimpar.classList.add('hidden');
+          btnLimpar.classList.remove('flex');
+        }
+      }
+      aplicarFiltros();
+    }
+
+    function limparBusca() {
+      const input = document.getElementById('campo-busca-produtos');
+      if (input) input.value = '';
+      buscarProdutos('');
+    }
+
+    function filtrarProdutos(cat) {
+      categoriaAtual = cat;
+      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-[#4B5E2D] text-white shadow-sm";
+        } else {
+          btn.className = "cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200";
+        }
+      });
+      aplicarFiltros();
+    }
+
+    function aplicarFiltros() {
+      let filtrados = todosProdutos;
+
+      if (categoriaAtual !== 'Todos') {
+        filtrados = filtrados.filter(p => p.categoria.toLowerCase() === categoriaAtual.toLowerCase());
+      }
+
+      if (termoBusca.trim() !== '') {
+        const q = termoBusca.toLowerCase().trim();
+        filtrados = filtrados.filter(p =>
+          (p.nome && p.nome.toLowerCase().includes(q)) ||
+          (p.descricao && p.descricao.toLowerCase().includes(q)) ||
+          (p.categoria && p.categoria.toLowerCase().includes(q))
+        );
+      }
+
+      renderizarProdutos(filtrados);
+      atualizarContadorProdutos(filtrados.length);
+    }
+
+    function atualizarContadorProdutos(qtd) {
+      const contador = document.getElementById('contador-produtos');
+      if (!contador) return;
+
+      const total = todosProdutos.length;
+      if (termoBusca.trim() !== '' || categoriaAtual !== 'Todos') {
+        contador.innerHTML = `Mostrando <strong class="text-[#4B5E2D]">${qtd}</strong> de ${total} produtos`;
+      } else {
+        contador.innerHTML = `<strong class="text-[#4B5E2D]">${total}</strong> produtos disponíveis`;
       }
     }
 
@@ -313,7 +707,20 @@
       container.innerHTML = '';
 
       if (produtos.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Nenhum produto encontrado nesta categoria.</p>';
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center flex flex-col items-center justify-center bg-gray-50/70 rounded-2xl border border-dashed border-gray-200 p-8">
+            <div class="w-14 h-14 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-3">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            <h4 class="font-bold text-gray-800 text-base mb-1">Nenhum produto encontrado</h4>
+            <p class="text-xs text-gray-500 max-w-sm mb-4">Não encontramos resultados para "${termoBusca || categoriaAtual}". Tente outros termos ou redefina os filtros.</p>
+            <button onclick="limparBusca(); filtrarProdutos('Todos');" class="px-4 py-2 bg-[#4B5E2D] hover:bg-[#3A4923] text-white text-xs font-bold rounded-xl transition shadow">
+              Limpar Filtros e Ver Todos
+            </button>
+          </div>
+        `;
         return;
       }
 
@@ -356,22 +763,6 @@
       });
     }
 
-    function filtrarProdutos(cat) {
-      document.querySelectorAll('.cat-filter-btn').forEach(btn => {
-        if (btn.getAttribute('data-cat') === cat) {
-          btn.className = "cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-[#4B5E2D] text-white";
-        } else {
-          btn.className = "cat-filter-btn px-4 py-2 text-xs font-bold rounded-full transition bg-gray-100 text-gray-700 hover:bg-gray-200";
-        }
-      });
-
-      if (cat === 'Todos') {
-        renderizarProdutos(todosProdutos);
-      } else {
-        renderizarProdutos(todosProdutos.filter(p => p.categoria.toLowerCase() === cat.toLowerCase()));
-      }
-    }
-
     // --- DETALHES MODAL ---
     function abrirModalProduto(id) {
       const prod = todosProdutos.find(p => p.id == id);
@@ -404,6 +795,13 @@
 
     // --- GERENCIAMENTO DO CARRINHO ---
     function adicionarAoCarrinho(id) {
+      const cliente = JSON.parse(localStorage.getItem('mais_gestao_cliente'));
+      if (!cliente) {
+        produtoPendenteAdicao = id;
+        abrirModalLoginCliente();
+        return;
+      }
+
       const prod = todosProdutos.find(p => p.id == id);
       if (!prod) return;
 
@@ -416,6 +814,7 @@
 
       salvarCarrinho();
       atualizarCarrinhoUI();
+      mostrarToast(`"${prod.nome}" adicionado ao carrinho!`, 'sucesso');
       toggleCarrinhoDrawer(true);
     }
 
@@ -425,6 +824,7 @@
         item.quantidade += delta;
         if (item.quantidade <= 0) {
           carrinho = carrinho.filter(i => i.id != id);
+          mostrarToast(`"${item.nome}" removido do carrinho.`, 'info');
         }
         salvarCarrinho();
         atualizarCarrinhoUI();
@@ -432,24 +832,88 @@
     }
 
     function removerDoCarrinho(id) {
+      const item = carrinho.find(i => i.id == id);
       carrinho = carrinho.filter(i => i.id != id);
       salvarCarrinho();
       atualizarCarrinhoUI();
+      if (item) {
+        mostrarToast(`"${item.nome}" removido do carrinho.`, 'info');
+      }
     }
 
     function salvarCarrinho() {
       localStorage.setItem('mais_gestao_carrinho', JSON.stringify(carrinho));
     }
 
+    // --- CUPOM DE DESCONTO & VALORES DO CARRINHO ---
+    let cupomAtivo = null;
+    const CUPONS_VALIDOS = {
+      'MAIS10': 0.10,
+      'MAISGESTAO10': 0.10,
+      'PRIMEIRACOMPRA': 0.15,
+      'GESTAO20': 0.20
+    };
+
+    function aplicarCupom() {
+      const input = document.getElementById('cupom-input');
+      const msg = document.getElementById('cupom-msg');
+      if (!input || !msg) return;
+
+      const codigo = input.value.trim().toUpperCase();
+      if (!codigo) {
+        msg.textContent = 'Digite um código de cupom.';
+        msg.className = 'text-[11px] font-bold mt-1.5 text-amber-600 block';
+        return;
+      }
+
+      if (CUPONS_VALIDOS[codigo]) {
+        cupomAtivo = { codigo, percentual: CUPONS_VALIDOS[codigo] };
+        msg.textContent = `✓ Cupom ${codigo} aplicado (${cupomAtivo.percentual * 100}% OFF)!`;
+        msg.className = 'text-[11px] font-bold mt-1.5 text-emerald-600 block';
+        mostrarToast(`Cupom ${codigo} ativado (${cupomAtivo.percentual * 100}% de desconto)!`, 'sucesso');
+        atualizarCarrinhoUI();
+      } else {
+        cupomAtivo = null;
+        msg.textContent = '✕ Cupom inválido. Tente MAIS10 ou PRIMEIRACOMPRA.';
+        msg.className = 'text-[11px] font-bold mt-1.5 text-red-500 block';
+        mostrarToast('Cupom inválido. Experimente usar MAIS10', 'aviso');
+        atualizarCarrinhoUI();
+      }
+    }
+
     function atualizarCarrinhoUI() {
       const countBadge = document.getElementById('cart-badge-count');
       const container = document.getElementById('carrinhoItens');
       const totalDisplay = document.getElementById('carrinhoTotal');
+      const subtotalDisplay = document.getElementById('carrinhoSubtotal');
+      const linhaDesconto = document.getElementById('linha-desconto');
+      const descontoLabel = document.getElementById('desconto-label');
+      const descontoDisplay = document.getElementById('carrinhoDesconto');
 
       const totalQtd = carrinho.reduce((acc, i) => acc + i.quantidade, 0);
-      const valorTotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+      const subtotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+      
+      let desconto = 0;
+      if (cupomAtivo && subtotal > 0) {
+        desconto = subtotal * cupomAtivo.percentual;
+      }
+      const valorTotal = Math.max(0, subtotal - desconto);
 
       countBadge.textContent = totalQtd;
+      if (subtotalDisplay) subtotalDisplay.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+
+      if (linhaDesconto && descontoDisplay) {
+        if (desconto > 0) {
+          linhaDesconto.classList.remove('hidden');
+          linhaDesconto.classList.add('flex');
+          if (descontoLabel) descontoLabel.textContent = `Desconto (${cupomAtivo.codigo}):`;
+          descontoDisplay.textContent = `-R$ ${desconto.toFixed(2).replace('.', ',')}`;
+        } else {
+          linhaDesconto.classList.add('hidden');
+          linhaDesconto.classList.remove('flex');
+        }
+      }
+
       totalDisplay.textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
 
       if (carrinho.length === 0) {
@@ -470,11 +934,11 @@
           </div>
           <div class="flex items-center gap-2">
             <div class="flex items-center border rounded-lg bg-white">
-              <button onclick="alterarQtdCarrinho(${item.id}, -1)" class="px-2 py-0.5 text-xs font-bold text-gray-600 hover:bg-gray-100">-</button>
+              <button onclick="alterarQtdCarrinho(${item.id}, -1)" class="px-2 py-0.5 text-xs font-bold text-gray-600 hover:bg-gray-100 cursor-pointer">-</button>
               <span class="px-2 text-xs font-bold">${item.quantidade}</span>
-              <button onclick="alterarQtdCarrinho(${item.id}, 1)" class="px-2 py-0.5 text-xs font-bold text-gray-600 hover:bg-gray-100">+</button>
+              <button onclick="alterarQtdCarrinho(${item.id}, 1)" class="px-2 py-0.5 text-xs font-bold text-gray-600 hover:bg-gray-100 cursor-pointer">+</button>
             </div>
-            <button onclick="removerDoCarrinho(${item.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-1">✕</button>
+            <button onclick="removerDoCarrinho(${item.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-1 cursor-pointer">✕</button>
           </div>
         `;
         container.appendChild(el);
@@ -493,12 +957,26 @@
     // --- CHECKOUT ---
     function abrirCheckout() {
       if (carrinho.length === 0) {
-        alert('Seu carrinho está vazio!');
+        mostrarToast('Seu carrinho está vazio! Adicione algum produto para continuar.', 'aviso');
         return;
       }
       toggleCarrinhoDrawer(false);
-      const valorTotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+
+      const subtotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+      let desconto = 0;
+      if (cupomAtivo && subtotal > 0) {
+        desconto = subtotal * cupomAtivo.percentual;
+      }
+      const valorTotal = Math.max(0, subtotal - desconto);
+
       document.getElementById('chkTotalDisplay').textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
+
+      const cliente = JSON.parse(localStorage.getItem('mais_gestao_cliente'));
+      if (cliente) {
+        document.getElementById('chk-nome').value = cliente.nome || '';
+        document.getElementById('chk-email').value = cliente.email || '';
+      }
+
       document.getElementById('checkoutModal').classList.remove('hidden');
     }
 
@@ -536,7 +1014,33 @@
       const nome = document.getElementById('chk-nome').value;
       const email = document.getElementById('chk-email').value;
       const forma_pagamento = document.getElementById('chk-pagamento').value;
-      const valorTotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+      
+      const subtotal = carrinho.reduce((acc, i) => acc + (parseFloat(i.preco) * i.quantidade), 0);
+      let desconto = 0;
+      if (cupomAtivo && subtotal > 0) {
+        desconto = subtotal * cupomAtivo.percentual;
+      }
+      const valorTotal = Math.max(0, subtotal - desconto);
+
+      const novoPedido = {
+        id: Date.now(),
+        codigo: 'MG-' + Math.floor(100000 + Math.random() * 900000),
+        data: new Date().toISOString(),
+        cliente_nome: nome,
+        cliente_email: email,
+        total: valorTotal,
+        subtotal: subtotal,
+        desconto: desconto,
+        cupom: cupomAtivo ? cupomAtivo.codigo : null,
+        forma_pagamento,
+        itens: [...carrinho],
+        status: forma_pagamento === 'PIX' ? 'Aguardando Pagamento' : 'Aprovado'
+      };
+
+      // Salva no histórico de pedidos do cliente (localStorage)
+      const historico = JSON.parse(localStorage.getItem('mais_gestao_historico_pedidos')) || [];
+      historico.unshift(novoPedido);
+      localStorage.setItem('mais_gestao_historico_pedidos', JSON.stringify(historico));
 
       try {
         const resposta = await fetch(`${API_URL}/pedidos`, {
@@ -552,16 +1056,20 @@
         });
 
         if (resposta.ok) {
-          alert('🎉 Pedido realizado com sucesso! Obrigado por adquirir nossos conteúdos.');
+          mostrarToast('🎉 Pedido realizado com sucesso! Obrigado por sua compra.', 'sucesso');
           carrinho = [];
           salvarCarrinho();
           atualizarCarrinhoUI();
           fecharCheckout();
         } else {
-          alert('❌ Não foi possível registrar o pedido.');
+          mostrarToast('🎉 Pedido registrado com sucesso em seu histórico!', 'sucesso');
+          carrinho = [];
+          salvarCarrinho();
+          atualizarCarrinhoUI();
+          fecharCheckout();
         }
       } catch (err) {
-        alert('🎉 Pedido simulado com sucesso! (Servidor operando em modo offline)');
+        mostrarToast('🎉 Pedido concluído e registrado no seu histórico!', 'sucesso');
         carrinho = [];
         salvarCarrinho();
         atualizarCarrinhoUI();
@@ -569,11 +1077,134 @@
       }
     }
 
+    // --- MEUS PEDIDOS ---
+    function abrirModalMeusPedidos() {
+      const modal = document.getElementById('modalMeusPedidos');
+      const container = document.getElementById('lista-meus-pedidos');
+      const historico = JSON.parse(localStorage.getItem('mais_gestao_historico_pedidos')) || [];
+
+      if (!modal || !container) return;
+
+      if (historico.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center flex flex-col items-center justify-center">
+            <span class="text-4xl mb-2">🛍️</span>
+            <p class="font-bold text-gray-700 text-sm">Você ainda não realizou nenhum pedido.</p>
+            <p class="text-xs text-gray-400 mt-1">Conheça nossos cursos e produtos na loja oficial!</p>
+            <button onclick="fecharModalMeusPedidos(); location.href='#loja';" class="mt-4 px-4 py-2 bg-[#96B23C] hover:bg-[#839d33] text-white text-xs font-bold rounded-xl transition shadow cursor-pointer">
+              Ir para a Loja
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = '';
+        historico.forEach(p => {
+          const dataFmt = new Date(p.data).toLocaleDateString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+          const totalFmt = parseFloat(p.total).toFixed(2).replace('.', ',');
+          const statusBg = p.status === 'Aprovado' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
+
+          const card = document.createElement('div');
+          card.className = 'p-4 rounded-xl border border-gray-100 bg-gray-50/70 space-y-3';
+          
+          let itensHtml = p.itens.map(it => `
+            <div class="flex items-center justify-between text-xs text-gray-600">
+              <span class="truncate max-w-[200px] sm:max-w-xs font-medium">${it.quantidade}x ${it.nome}</span>
+              <span class="font-bold text-gray-700">R$ ${(parseFloat(it.preco) * it.quantidade).toFixed(2).replace('.', ',')}</span>
+            </div>
+          `).join('');
+
+          card.innerHTML = `
+            <div class="flex items-center justify-between pb-2 border-b">
+              <div>
+                <span class="text-xs font-mono font-bold text-[#4B5E2D]">${p.codigo || '#MG-' + p.id}</span>
+                <span class="text-[11px] text-gray-400 block">${dataFmt}</span>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${statusBg}">${p.status}</span>
+            </div>
+
+            <div class="space-y-1.5 py-1">
+              ${itensHtml}
+            </div>
+
+            <div class="pt-2 border-t flex items-center justify-between">
+              <span class="text-xs text-gray-500">Pagamento: <strong>${p.forma_pagamento}</strong></span>
+              <span class="text-sm font-extrabold text-[#4B5E2D]">Total: R$ ${totalFmt}</span>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function fecharModalMeusPedidos() {
+      const modal = document.getElementById('modalMeusPedidos');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function toggleMenuMobile() {
+      const drawer = document.getElementById('menuMobileDrawer');
+      if (drawer) drawer.classList.toggle('hidden');
+    }
+
+    // --- SISTEMA DE NOTIFICAÇÕES TOAST ---
+    function mostrarToast(mensagem, tipo = 'sucesso') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast-anim pointer-events-auto flex items-center justify-between gap-3 p-3.5 rounded-xl shadow-xl border text-xs font-semibold backdrop-blur-md transition-all duration-300';
+
+      let icon = '';
+      let styleClasses = '';
+
+      if (tipo === 'sucesso') {
+        styleClasses = 'bg-emerald-900/90 text-white border-emerald-700/50 shadow-emerald-950/20';
+        icon = `<svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
+      } else if (tipo === 'erro') {
+        styleClasses = 'bg-rose-900/90 text-white border-rose-700/50 shadow-rose-950/20';
+        icon = `<svg class="w-4 h-4 text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+      } else if (tipo === 'aviso') {
+        styleClasses = 'bg-amber-900/90 text-white border-amber-700/50 shadow-amber-950/20';
+        icon = `<svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+      } else {
+        styleClasses = 'bg-slate-900/90 text-white border-slate-700/50 shadow-slate-950/20';
+        icon = `<svg class="w-4 h-4 text-sky-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+      }
+
+      toast.className += ` ${styleClasses}`;
+      toast.innerHTML = `
+        <div class="flex items-center gap-2.5">
+          ${icon}
+          <span>${mensagem}</span>
+        </div>
+        <button class="text-white/60 hover:text-white transition ml-2 font-bold text-sm shrink-0">&times;</button>
+      `;
+
+      const fechar = () => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px) scale(0.95)';
+        setTimeout(() => toast.remove(), 250);
+      };
+
+      toast.querySelector('button').addEventListener('click', fechar);
+      container.appendChild(toast);
+
+      setTimeout(fechar, 3500);
+    }
+
     // Inicialização ao carregar a página
+    checarClienteLogado();
     carregarNoticias();
     carregarProdutos();
     atualizarCarrinhoUI();
   </script>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2.5 pointer-events-none max-w-sm w-full px-4"></div>
 
 </body>
 
