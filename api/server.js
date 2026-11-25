@@ -164,6 +164,46 @@ app.post('/api/noticias', verificarAutenticacao, (req, res) => {
   });
 });
 
+// Editar notícia
+app.put('/api/noticias/:id', verificarAutenticacao, (req, res) => {
+  const { id } = req.params;
+  const { titulo, conteudo } = req.body;
+
+  if (!titulo || !conteudo) {
+    return res.status(400).json({ erro: "Título e conteúdo são obrigatórios!" });
+  }
+
+  if (!isDbConnected) {
+    const noticia = mockNoticias.find(n => n.id == id);
+    if (!noticia) return res.status(404).json({ erro: "Notícia não encontrada!" });
+    noticia.titulo = titulo;
+    noticia.conteudo = conteudo;
+    return res.json({ mensagem: "Notícia atualizada com sucesso! (Modo Em Memória)" });
+  }
+
+  const sql = "UPDATE noticias SET titulo = ?, conteudo = ? WHERE id = ?";
+  db.query(sql, [titulo, conteudo, id], (err, result) => {
+    if (err) return res.status(500).json({ erro: "Erro ao atualizar notícia no banco" });
+    res.json({ mensagem: "Notícia atualizada com sucesso!" });
+  });
+});
+
+// Deletar notícia
+app.delete('/api/noticias/:id', verificarAutenticacao, (req, res) => {
+  const { id } = req.params;
+
+  if (!isDbConnected) {
+    mockNoticias = mockNoticias.filter(n => n.id != id);
+    return res.json({ mensagem: "Notícia removida com sucesso!" });
+  }
+
+  const sql = "DELETE FROM noticias WHERE id = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.status(500).json({ erro: "Erro ao deletar notícia do banco" });
+    res.json({ mensagem: "Notícia removida com sucesso!" });
+  });
+});
+
 // ---------------------------------------------------------
 // ROTAS DO E-COMMERCE (PRODUTOS & PEDIDOS)
 // ---------------------------------------------------------
@@ -210,6 +250,38 @@ app.post('/api/produtos', verificarAutenticacao, (req, res) => {
   db.query(sql, [nome, descricao, numPreco, categoria, imgUrl, numEstoque], (err, result) => {
     if (err) return res.status(500).json({ erro: "Erro ao cadastrar produto no banco" });
     res.status(201).json({ mensagem: "Produto cadastrado com sucesso!" });
+  });
+});
+
+// Editar produto
+app.put('/api/produtos/:id', verificarAutenticacao, (req, res) => {
+  const { id } = req.params;
+  const { nome, descricao, preco, categoria, imagem, estoque } = req.body;
+
+  if (!nome || !descricao || !preco || !categoria) {
+    return res.status(400).json({ erro: "Nome, descrição, preço e categoria são obrigatórios!" });
+  }
+
+  const numPreco = parseFloat(preco);
+  const numEstoque = parseInt(estoque) || 10;
+  const imgUrl = imagem || "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80";
+
+  if (!isDbConnected) {
+    const produto = mockProdutos.find(p => p.id == id);
+    if (!produto) return res.status(404).json({ erro: "Produto não encontrado!" });
+    produto.nome = nome;
+    produto.descricao = descricao;
+    produto.preco = numPreco;
+    produto.categoria = categoria;
+    produto.imagem = imgUrl;
+    produto.estoque = numEstoque;
+    return res.json({ mensagem: "Produto atualizado com sucesso! (Modo Em Memória)" });
+  }
+
+  const sql = "UPDATE produtos SET nome = ?, descricao = ?, preco = ?, categoria = ?, imagem = ?, estoque = ? WHERE id = ?";
+  db.query(sql, [nome, descricao, numPreco, categoria, imgUrl, numEstoque, id], (err, result) => {
+    if (err) return res.status(500).json({ erro: "Erro ao atualizar produto no banco" });
+    res.json({ mensagem: "Produto atualizado com sucesso!" });
   });
 });
 
